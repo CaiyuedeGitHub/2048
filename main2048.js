@@ -1,9 +1,35 @@
 var board = new Array();
 var score = 0;
+var hasConflicted = new Array();
+
+var startx = 0;
+var starty = 0;
+var endx = 0;
+var endy = 0;
 
 $(document).ready(function(){
+    prepareForMobile();
     newGame();
-})
+})；
+
+function prepareForMobile(){
+    if( documentWidth > 500 ) {
+        gridContainerWidth = 500;
+        cellSideLength = 100;
+        cellSpace = 20;
+    }else{
+        $('#grid-container').css('width',gridContainerWidth - 2 * cellSpace);
+        $('#grid-container').css('height',gridContainerWidth - 2 * cellSpace);
+        $('#grid-container').css('padding',cellSpace);
+        $('#grid-container').css('border-radius',0.02 * documentWidth);
+
+        $('.grid-cell').css('width',cellSideLength);
+        $('.grid-cell').css('height',cellSideLength);
+        $('.grid-cell').css('border-radius',0.02 * cellSideLength);
+    }
+
+
+};
 
 function newGame(){
     //点击newGme后棋盘的样子
@@ -28,6 +54,7 @@ function init(){
         }
     }
     updateBoardView();
+    score = 0；
 }
 
 function updateBoardView(){
@@ -39,21 +66,24 @@ function updateBoardView(){
             if(board[i][j] == 0){
                 theNumberCell.css('width','0px');
                 theNumberCell.css('height','0px');
-                theNumberCell.css('top',getPosTop(i,j) + 50);
-                theNumberCell.css('left',getPosLeft(i,j) + 50);
+                theNumberCell.css('top',getPosTop(i,j) + cellSideLength/2);
+                theNumberCell.css('left',getPosLeft(i,j) + cellSideLength/2);
             }else{
-                theNumberCell.css('width','100px');
-                theNumberCell.css('height','100px');
+                theNumberCell.css('width',cellSideLength);
+                theNumberCell.css('height',cellSideLength);
                 theNumberCell.css('top',getPosTop(i,j));
                 theNumberCell.css('left',getPosLeft(i,j));
                 theNumberCell.css('background-color',getNumberBackgroundColor(board[i][j]));
                 theNumberCell.css('color',getNumberColor(board[i][j]));
                 theNumberCell.text(board[i][j]);
             }
+        hasConflicted[i][j] = false;
         }
     }
-}
+    $('.number-cell').css('line-height',cellSideLength+'px');
+    $('.number-cell').css('font-size',0.6 * cellSideLength+'px');
 
+}；
 function generateOneNumber(){
     if(nospace(board)){
         return false;
@@ -83,29 +113,29 @@ $(document).keydown(function( event ){
     switch ( event.keyCode ){
         case 37:
             if( moveLeft() ){
-                generateOneNumber();
-                isgameover();
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
             }
             break;
 
         case 38:
             if( moveUp() ){
-                generateOneNumber();
-                isgameover();
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
             }
             break;
 
         case 39:
             if( moveRight() ){
-                generateOneNumber();
-                isgameover();
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
             }
             break;
 
         case 40:
             if( moveDown() ){
-                generateOneNumber();
-                isgameover();
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
             }
             break;
 
@@ -115,8 +145,60 @@ $(document).keydown(function( event ){
     }
 });
 
-function isgameover(){
+document.addEventListener('touchstart',function( event ){
+    startx = event.touches[0].pageX;
+    starty = event.touches[0].pageY;
+});
 
+document.addEventListener('touchend',function( event ){
+    endx = event.changedTouches[0].pageX;
+    endy = event.changedTouches[0].pageY;
+
+    var deltax = endx - startx;
+    var deltay = endy - starty;
+
+    if( Math.abs( deltax ) >= Math.abs( deltay ) ){
+        if( deltax > 0 ){
+            //moveRigth
+            if( moveRight() ){
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
+            }
+        }else{
+            //moveLeft
+            if( moveLeft() ){
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
+            }
+        }
+    }else{
+        if( deltay > 0 ){
+            //moveDown
+            if( moveDown() ){
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
+            }
+        }else{
+            //movwUp
+            if( moveUp() ){
+                setTimeout('generateOneNumber()',210);
+                setTimeout('isgameover()',300);
+            }
+        }
+    }
+});
+
+function isgameover(){
+    if( nospace( board ) && nomove( board ) ){
+        gameover();
+        return true;
+    }else{
+        return false;
+    }
+};
+
+function gameover(){
+    alert('彩钺在嘲笑你~you gameover!')
 };
 
 function moveLeft(){
