@@ -10,7 +10,7 @@ var endy = 0;
 $(document).ready(function(){
     prepareForMobile();
     newGame();
-})；
+});
 
 function prepareForMobile(){
     if( documentWidth > 500 ) {
