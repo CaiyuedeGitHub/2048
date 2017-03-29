@@ -214,7 +214,7 @@ function moveLeft(){
                             board[i][k] = board[i][j];
                             board[i][j] = 0;
                             //continue;
-                        }else if( board[i][k] == board[i][j] && noBlockHorizontal( i, k, j, board ) ){
+                        }else if( board[i][k] == board[i][j] && noBlockHorizontal( i, k, j, board ) && !hasConflicted[i][k] ){
                             showMoveAnimation( i, j, i, k );
                             board[i][k] += board[i][j];
                             board[i][j] = 0;
@@ -242,7 +242,7 @@ function moveRight(){
                             board[i][k] = board[i][j];
                             board[i][j] = 0;
                             continue;
-                        }else if( board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) ){
+                        }else if( board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && !hasConflicted[i][k] ){
                             showMoveAnimation( i, j, i, k );
                             board[i][k] *= 2;
                             board[i][j] = 0;
@@ -270,7 +270,7 @@ function moveUp(){
                             board[k][j] = board[i][j];
                             board[i][j] = 0;
                             continue;
-                        }else if( board[k][j] == board[i][j] && noBlockVertical(j, k, i, board) ){
+                        }else if( board[k][j] == board[i][j] && noBlockVertical(j, k, i, board) && !hasConflicted[k][j] ){
                             showMoveAnimation(i, j, k, j);
                             board[k][j] *= 2;
                             board[i][j] = 0;
@@ -298,7 +298,7 @@ function moveDown(){
                             board[k][j] = board[i][j];
                             board[i][j] = 0;
                             continue;
-                        }else if( board[k][j] == board[i][j] && noBlockVertical( j, i, k, board ) ){
+                        }else if( board[k][j] == board[i][j] && noBlockVertical( j, i, k, board ) && !hasConflicted[k][j] ){
                             showMoveAnimation( i, j, k, j );
                             board[k][j] *= 2;
                             board[i][j] = 0;
