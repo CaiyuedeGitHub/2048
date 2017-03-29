@@ -49,12 +49,14 @@ function init(){
     }
     for(var i = 0; i < 4; i++){
         board[i] = new Array();
+        hasConflicted[i] = new Array();
         for(var j = 0; j < 4; j++){
             board[i][j] = 0;
+            hasConflicted[i][j] = false;
         }
     }
     updateBoardView();
-    score = 0；
+    score = 0;
 }
 
 function updateBoardView(){
@@ -77,13 +79,15 @@ function updateBoardView(){
                 theNumberCell.css('color',getNumberColor(board[i][j]));
                 theNumberCell.text(board[i][j]);
             }
-        hasConflicted[i][j] = false;
+
+            hasConflicted[i][j] = false;
         }
     }
     $('.number-cell').css('line-height',cellSideLength+'px');
     $('.number-cell').css('font-size',0.6 * cellSideLength+'px');
 
-}；
+}
+
 function generateOneNumber(){
     if(nospace(board)){
         return false;
@@ -91,14 +95,27 @@ function generateOneNumber(){
         //随机生成一个位置
         var randx = parseInt(Math.floor(Math.random() * 4));
         var randy = parseInt(Math.floor(Math.random() * 4));
-        while(true){
+        var times = 0;
+        while( times < 50 ){
             if(board[randx][randy] == 0){
                 break;
             }else{
                 var randx = parseInt(Math.floor(Math.random() * 4));
                 var randy = parseInt(Math.floor(Math.random() * 4));
+                times ++;
             };
         }
+        if( times == 50 ){
+            for( var i = 0; i < 4; i ++ ){
+                for( var j = 0; j < 4; j ++ ){
+                   if( board[i][j] == 0 ){
+                       randx = i;
+                       randy = j;
+                   }
+                }
+            }
+        }
+
         //随机生成一个数字
         var randNumber = Math.random() < 0.5 ? 2:4;
         //将随机生成的两个数字放到随机生成的位置上
@@ -142,7 +159,8 @@ $(document).keydown(function( event ){
         default :
 
             break;
-    }
+    };
+
 });
 
 document.addEventListener('touchstart',function( event ){
@@ -218,6 +236,10 @@ function moveLeft(){
                             showMoveAnimation( i, j, i, k );
                             board[i][k] += board[i][j];
                             board[i][j] = 0;
+                            //add score;
+                            score += board[i][k];
+                            updateScore( score );
+                            hasConflicted[i][k] = true;
                             continue;
                         }
                     }
@@ -246,6 +268,10 @@ function moveRight(){
                             showMoveAnimation( i, j, i, k );
                             board[i][k] *= 2;
                             board[i][j] = 0;
+                            //add score;
+                            score += board[i][k];
+                            updateScore( score );
+                            hasConflicted[i][k] = true;
                             continue;
                         }
                     }
@@ -274,6 +300,10 @@ function moveUp(){
                             showMoveAnimation(i, j, k, j);
                             board[k][j] *= 2;
                             board[i][j] = 0;
+                            //add score;
+                            score += board[k][j];
+                            updateScore( score );
+                            hasConflicted[k][j] = true;
                             continue;
                         }
                     }
@@ -302,6 +332,10 @@ function moveDown(){
                             showMoveAnimation( i, j, k, j );
                             board[k][j] *= 2;
                             board[i][j] = 0;
+                            //add score;
+                            score += board[k][j];
+                            updateScore( score );
+                            hasConflicted[k][j] = true;
                             continue;
                         }
                     }
@@ -312,4 +346,5 @@ function moveDown(){
         return true;
     }
 }
+
 
