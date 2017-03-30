@@ -129,6 +129,7 @@ function generateOneNumber(){
 $(document).keydown(function( event ){
     switch ( event.keyCode ){
         case 37:
+            event.preventDefault();
             if( moveLeft() ){
                 setTimeout('generateOneNumber()',210);
                 setTimeout('isgameover()',300);
@@ -136,6 +137,7 @@ $(document).keydown(function( event ){
             break;
 
         case 38:
+            event.preventDefault();
             if( moveUp() ){
                 setTimeout('generateOneNumber()',210);
                 setTimeout('isgameover()',300);
@@ -143,6 +145,7 @@ $(document).keydown(function( event ){
             break;
 
         case 39:
+            event.preventDefault();
             if( moveRight() ){
                 setTimeout('generateOneNumber()',210);
                 setTimeout('isgameover()',300);
@@ -150,6 +153,7 @@ $(document).keydown(function( event ){
             break;
 
         case 40:
+            event.preventDefault();
             if( moveDown() ){
                 setTimeout('generateOneNumber()',210);
                 setTimeout('isgameover()',300);
@@ -168,13 +172,22 @@ document.addEventListener('touchstart',function( event ){
     starty = event.touches[0].pageY;
 });
 
+document.addEventListener('touchstart',function( event ){
+    startx = event.touches[0].pageX;
+    starty = event.touches[0].pageY;
+});
+
 document.addEventListener('touchend',function( event ){
     endx = event.changedTouches[0].pageX;
     endy = event.changedTouches[0].pageY;
 
     var deltax = endx - startx;
     var deltay = endy - starty;
-
+    
+    if( Math.abs( deltax ) < 0.3 * documentWidth && Math.abs( deltay ) < 0.3 * documentWidth){
+        return true;
+    };
+    
     if( Math.abs( deltax ) >= Math.abs( deltay ) ){
         if( deltax > 0 ){
             //moveRigth
